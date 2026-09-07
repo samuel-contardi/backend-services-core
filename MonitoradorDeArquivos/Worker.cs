@@ -1,17 +1,42 @@
+using Microsoft.Extensions.Hosting;
+using System.Threading;
+using System.Threading.Tasks;
+using MonitoradorDeArquivos.Services;
+
 namespace MonitoradorDeArquivos
 {
-    public class Worker(ILogger<Worker> logger) : BackgroundService
+    public class Worker : BackgroundService
     {
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+
+        private readonly IFolderMonitorService _monitorService;
+
+
+        public Worker()
         {
-            while (!stoppingToken.IsCancellationRequested)
-            {
-                if (logger.IsEnabled(LogLevel.Information))
-                {
-                    logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                }
-                await Task.Delay(1000, stoppingToken);
-            }
+
+            ILoggerService logger = new FileLoggerService(@"C:\TesteTecnico\log_monitoramento.txt");
+
+
+            _monitorService = new FolderMonitorService(logger, @"C:\TesteTecnico\PastaMonitorada");
+        }
+
+  
+        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+
+            _monitorService.IniciarMonitoramento();
+
+
+            return Task.CompletedTask;
+        }
+
+  
+        public override Task StopAsync(CancellationToken cancellationToken)
+        {
+
+            _monitorService.PararMonitoramento();
+
+            return base.StopAsync(cancellationToken);
         }
     }
 }
