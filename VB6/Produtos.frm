@@ -5,8 +5,8 @@ Private Sub UserForm_Initialize()
         .FullRowSelect = True
         
         .ColumnHeaders.Clear
-        .ColumnHeaders.Add , , Nome do Produto, 500
-        .ColumnHeaders.Add , , Preço (R$), 150
+        .ColumnHeaders.Add , , "Nome do Produto", 500
+        .ColumnHeaders.Add , , "Preço (R$)", 150
     End With
 End Sub
 
@@ -15,30 +15,29 @@ Private Sub cmdCarregarAPI_Click()
     Dim url As String
     Dim jsonResponse As String
     
-
-    Set http = CreateObject(MSXML2.ServerXMLHTTP.6.0)
-    url = httpsfakestoreapi.comproducts
+    Set http = CreateObject("MSXML2.ServerXMLHTTP.6.0")
+    url = "https://fakestoreapi.com/products"
     
     On Error GoTo ErrorHandler
     
-    http.Open GET, url, False
-    http.setRequestHeader Content-Type, applicationjson
+    http.Open "GET", url, False
+    http.setRequestHeader "Content-Type", "application/json"
     http.send
     
     If http.Status = 200 Then
         jsonResponse = http.responseText
         
         Call PreencherListViewComJSON(jsonResponse)
-        MsgBox Dados carregados com sucesso!, vbInformation, Sucesso
+        MsgBox "Dados carregados com sucesso!", vbInformation, "Sucesso"
     Else
-        MsgBox Erro na API. Código  & http.Status, vbCritical, Erro
+        MsgBox "Erro na API. Código: " & http.Status, vbCritical, "Erro"
     End If
     
     Set http = Nothing
     Exit Sub
 
-ErrorHandler
-    MsgBox Erro de conexão  & Err.Description, vbCritical, Erro de Sistema
+ErrorHandler:
+    MsgBox "Erro de conexão: " & Err.Description, vbCritical, "Erro de Sistema"
     Set http = Nothing
 End Sub
 
@@ -50,11 +49,11 @@ Private Sub PreencherListViewComJSON(ByVal jsonString As String)
     Dim nome As String
     Dim preco As String
     
-    Set regEx = CreateObject(VBScript.RegExp)
+    Set regEx = CreateObject("VBScript.RegExp")
     regEx.Global = True
     regEx.IgnoreCase = True
     
-    regEx.Pattern = title([^]+).price([0-9.]+)
+    regEx.Pattern = """title"":""([^""]+)"".*?""price"":([0-9\.]+)"
     
     Set matches = regEx.Execute(jsonString)
     
@@ -66,9 +65,10 @@ Private Sub PreencherListViewComJSON(ByVal jsonString As String)
         
         Set item = ListView1.ListItems.Add(, , nome)
         
-        preco = Replace(preco, ., ,)
+        preco = Replace(preco, ".", ",")
         item.SubItems(1) = FormatCurrency(preco)
     Next m
     
     Set regEx = Nothing
 End Sub
+

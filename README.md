@@ -47,4 +47,4 @@ Módulo desenvolvido para consumir dados de fornecedores externos via internet.
 *   **Solução Arquitetural:** Como ambientes legados não possuem *parsers* de JSON nativos e as bibliotecas JS de terceiros (MSScriptControl) falham em sistemas operacionais 64-bits modernos, a conversão do JSON foi desenhada utilizando **Expressões Regulares (VBScript.RegExp)**, garantindo estabilidade e compatibilidade universal.
 *   **Como testar:**
     1. O código fonte no arquivo `VB6/Produtos.frm` contém a interface gráfica configurada.
-    2. A lógica pode ser executada ou emulada em ambientes compatíveis com VBA/VB6, bastando adicionar um controle `ListView` à interface.
+    2. A lógica pode ser executada ou emulada em ambientes compatíveis com VBA/VB6, bastando adicionar um controle `ListView` à interface e um botão de comando para interação.
